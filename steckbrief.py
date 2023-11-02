@@ -7,6 +7,7 @@ from calc.limits import limits, singularities
 from calc.asymptotes import asymptotes
 from calc.zeros import zeros
 from calc.integral import integral
+from fields import all_fields
 
 def format_list(l):
     if not l:
@@ -75,19 +76,12 @@ def main(fn_str):
 
     return steckbrief
 
-fields = [
-    'function', 'function_example', 'depth', 'leaves', 'polynomial', 'rational', 'domain',
-    'singularities', 'singularities_count', 'limit_inf', 'limit_ninf', 'asymptotes', 'asymptotes_count', 
-    'periodicity', 'y_intercept', 'zeros', 'zeros_count', 'zeros_exact',
-    'derivative', 'integral','integral_elementary', 'integral_rules'
-]
-
 if __name__ == "__main__":
-    depth = 1
+    depth = 2
     start = time.perf_counter()
     with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
         with open(f'steckbriefe{depth}.csv', 'w', newline='', encoding='utf-8') as writefile:
-            writer = csv.DictWriter(writefile, fieldnames = fields)
+            writer = csv.DictWriter(writefile, fieldnames = all_fields)
             writer.writeheader()
             i = 0
             for line in readfile:
