@@ -86,7 +86,7 @@ def main(fn_str, queue):
     return steckbrief
 
 def queue_listener(queue, filename):
-    with open(filename, 'w', newline='', encoding='utf-8') as file:
+    with open(filename, 'a', newline='', encoding='utf-8') as file:
         while True:
             payload = queue.get()
             writer = csv.DictWriter(file, fieldnames = all_fields)
@@ -103,7 +103,7 @@ def done(future):
         print(error.traceback)
 
 if __name__ == "__main__":
-    timeout = 10
+    timeout = 30
     depth = 2
     write_filename = f'steckbriefe{depth}_pebble.csv'
     start = time.perf_counter()
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     queue_process = mp.Process(target=queue_listener, args=(queue, write_filename))
     queue_process.start()
 
-    with open(write_filename, 'w') as writefile:
+    with open(write_filename, 'w', newline='') as writefile:
         writer = csv.DictWriter(writefile, fieldnames = all_fields)
         writer.writeheader()
 
