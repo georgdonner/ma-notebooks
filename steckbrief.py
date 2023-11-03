@@ -1,6 +1,9 @@
-from sympy import oo, S, Symbol, sympify, calculus, periodicity, diff
 from operator import itemgetter
 import re, random, csv, time
+from sympy import oo, S, Symbol, sympify, calculus, periodicity, diff
+from concurrent.futures import TimeoutError
+import multiprocessing as mp
+from pebble import ProcessPool
 
 from calc.meta import tree_props
 from calc.limits import limits, singularities
@@ -14,9 +17,11 @@ def format_list(l):
         return ''
     return ','.join([str(n) for n in l])
 
-def main(fn_str):
+def main(fn_str, queue):
     x = Symbol('x', real=True)
     f = sympify(re.sub(r"c(?!o)", lambda m: str(random.choice([2,3,4])), fn_str), locals={'x': x})
+
+    start = time.perf_counter()
 
     steckbrief = {}
     steckbrief['function_example'] = str(f)
@@ -74,24 +79,52 @@ def main(fn_str):
     steckbrief['integral_elementary'] = integral_elementary
     steckbrief['integral_rules'] = format_list(integral_rules)
 
+    print(fn_str, time.perf_counter() - start)
+
+    queue.put(steckbrief)
+
     return steckbrief
 
+def queue_listener(queue, filename):
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        while 1:
+            payload = queue.get()
+            if payload == 'kill':
+                break
+            writer = csv.DictWriter(file, fieldnames = all_fields)
+            writer.writerow(payload)
+            file.flush()
+
+def done(future):
+    try:
+        future.result()
+    except TimeoutError as error:
+        print('Function timed out')
+    except Exception as error:
+        print('Function raised %s' % error)
+        print(error.traceback)
+
 if __name__ == "__main__":
+    timeout = 10
     depth = 2
     start = time.perf_counter()
-    with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
-        with open(f'steckbriefe{depth}.csv', 'w', newline='', encoding='utf-8') as writefile:
-            writer = csv.DictWriter(writefile, fieldnames = all_fields)
-            writer.writeheader()
-            i = 0
+
+    manager = mp.Manager()
+    queue = manager.Queue()
+
+    write_filename = f'steckbriefe{depth}_pebble.csv'
+
+    with open(write_filename, 'w') as writefile:
+        writer = csv.DictWriter(writefile, fieldnames = all_fields)
+        writer.writeheader()
+
+    with ProcessPool(max_workers=6) as pool:
+        pool.schedule(queue_listener, (queue, write_filename))
+        with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
-                l_start = time.perf_counter()
                 line = re.sub('\s+', '', line)
-                try:
-                    steckbrief = main(line)
-                    writer.writerow(steckbrief)
-                except Exception as e:
-                    print(e)
-                print(i, line, time.perf_counter() - l_start)
-                i += 1
+                future = pool.schedule(main, (line, queue), timeout=timeout)
+                future.add_done_callback(done)
+        queue.put('kill')
+
     print(f'Took {time.perf_counter() - start} seconds in total')

@@ -1,13 +1,15 @@
-from sympy import S, limit, Limit, oo, FiniteSet, calculus
+from sympy import S, limit, Limit, oo, FiniteSet, AccumBounds, calculus
 from math import inf
 from utils import convert_inf
+
+invalid_limit_types = [AccumBounds, Limit]
 
 def limits(f, x):
     limits = {}
     for p in FiniteSet(-oo, oo):
         try:
             l = limit(f, x, p)
-            if type(l) != Limit and not l.as_real_imag()[1]:
+            if type(l) not in invalid_limit_types and not l.as_real_imag()[1]:
                 limits[p] = convert_inf(l)
             else:
                 limits[p] = None
