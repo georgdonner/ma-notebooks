@@ -75,7 +75,7 @@ def main(fn_str, queue):
 
     # Integral
     _integral, integral_elementary, integral_rules = itemgetter('integral', 'integral_elementary', 'integral_rules')(integral(f, x))
-    steckbrief['integral'] = str(_integral)
+    steckbrief['integral'] = _integral
     steckbrief['integral_elementary'] = integral_elementary
     steckbrief['integral_rules'] = format_list(integral_rules)
 
@@ -87,10 +87,8 @@ def main(fn_str, queue):
 
 def queue_listener(queue, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as file:
-        while 1:
+        while True:
             payload = queue.get()
-            if payload == 'kill':
-                break
             writer = csv.DictWriter(file, fieldnames = all_fields)
             writer.writerow(payload)
             file.flush()
@@ -107,24 +105,26 @@ def done(future):
 if __name__ == "__main__":
     timeout = 10
     depth = 2
+    write_filename = f'steckbriefe{depth}_pebble.csv'
     start = time.perf_counter()
 
     manager = mp.Manager()
     queue = manager.Queue()
-
-    write_filename = f'steckbriefe{depth}_pebble.csv'
+    queue_process = mp.Process(target=queue_listener, args=(queue, write_filename))
+    queue_process.start()
 
     with open(write_filename, 'w') as writefile:
         writer = csv.DictWriter(writefile, fieldnames = all_fields)
         writer.writeheader()
 
     with ProcessPool(max_workers=6) as pool:
-        pool.schedule(queue_listener, (queue, write_filename))
         with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
                 line = re.sub('\s+', '', line)
                 future = pool.schedule(main, (line, queue), timeout=timeout)
                 future.add_done_callback(done)
-        queue.put('kill')
+        pool.close()
+        pool.join()
+        queue_process.kill()
 
     print(f'Took {time.perf_counter() - start} seconds in total')
