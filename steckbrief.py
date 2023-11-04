@@ -117,7 +117,7 @@ if __name__ == "__main__":
         writer = csv.DictWriter(writefile, fieldnames = all_fields)
         writer.writeheader()
 
-    with ProcessPool(max_workers=6) as pool:
+    with ProcessPool() as pool:
         with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
                 line = re.sub('\s+', '', line)
