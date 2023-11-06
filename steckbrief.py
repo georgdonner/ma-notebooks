@@ -37,10 +37,11 @@ def main(fn_str, queue):
     steckbrief['rational'] = bool(f.is_rational_function(x))
 
     # Definitionsbereich
-    steckbrief['domain'] = str(calculus.util.continuous_domain(f, x, S.Reals))
+    domain = calculus.util.continuous_domain(f, x, S.Reals)
+    steckbrief['domain'] = str(domain)
 
     # Unstetigkeitsstellen
-    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x))
+    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x, domain))
     steckbrief['singularities'] = format_list(_singularities)
     steckbrief['singularities_count'] = singularities_count
 
@@ -65,7 +66,7 @@ def main(fn_str, queue):
     steckbrief['y_intercept'] = y_intercept if y_intercept.is_real else None
 
     # Nullstellen
-    _zeros, zeros_count, zeros_exact = itemgetter('zeros', 'zeros_count', 'zeros_exact')(zeros(f, x))
+    _zeros, zeros_count, zeros_exact = itemgetter('zeros', 'zeros_count', 'zeros_exact')(zeros(f, x, domain))
     steckbrief['zeros'] = format_list(_zeros)
     steckbrief['zeros_count'] = zeros_count
     steckbrief['zeros_exact'] = str(zeros_exact)
@@ -105,7 +106,7 @@ def done(future):
 if __name__ == "__main__":
     timeout = 30
     depth = 2
-    write_filename = f'steckbriefe{depth}_pebble.csv'
+    write_filename = f'steckbriefe{depth}.csv'
     start = time.perf_counter()
 
     manager = mp.Manager()
@@ -120,9 +121,10 @@ if __name__ == "__main__":
     with ProcessPool() as pool:
         with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
-                line = re.sub('\s+', '', line)
-                future = pool.schedule(main, (line, queue), timeout=timeout)
-                future.add_done_callback(done)
+                if line != 'c':
+                    line = re.sub('\s+', '', line)
+                    future = pool.schedule(main, (line, queue), timeout=timeout)
+                    future.add_done_callback(done)
         pool.close()
         pool.join()
         queue_process.kill()

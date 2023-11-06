@@ -1,10 +1,10 @@
 from sympy import S, solve, solveset, ConditionSet
 from math import inf
 
-def zeros(f, x):
+def zeros(f, x, domain=S.Reals):
     zeros = None
     zeros_count = None
-    zeros_exact = solveset(f, x, S.Reals)
+    zeros_exact = solveset(f, x, domain)
 
     if not zeros_exact.is_FiniteSet:
         if not isinstance(zeros_exact, ConditionSet):
