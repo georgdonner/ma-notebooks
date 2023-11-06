@@ -19,7 +19,7 @@ def format_list(l):
 
 def main(fn_str, queue):
     x = Symbol('x', real=True)
-    f = sympify(re.sub(r"c(?!o)", lambda m: str(random.choice([2,3,4])), fn_str), locals={'x': x})
+    f = sympify(re.sub(r"k", lambda m: str(random.choice([2,3,4])), fn_str), locals={'x': x})
 
     start = time.perf_counter()
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     with ProcessPool() as pool:
         with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
-                if line != 'c':
+                if line != 'k':
                     line = re.sub('\s+', '', line)
                     future = pool.schedule(main, (line, queue), timeout=timeout)
                     future.add_done_callback(done)
