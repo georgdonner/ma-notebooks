@@ -17,9 +17,12 @@ def format_list(l):
         return ''
     return ','.join([str(n) for n in l])
 
+def has_inverse_trig(fn_str):
+    return 'asin' in fn_str or 'acos' in fn_str
+
 def main(fn_str, queue):
     x = Symbol('x', real=True)
-    f = sympify(re.sub(r"k", lambda m: str(random.choice([2,3,4])), fn_str), locals={'x': x})
+    f = sympify(re.sub(r"k", lambda _: str(random.choice([2,3,4])), fn_str), locals={'x': x})
 
     start = time.perf_counter()
 
@@ -37,11 +40,26 @@ def main(fn_str, queue):
     steckbrief['rational'] = bool(f.is_rational_function(x))
 
     # Definitionsbereich
-    domain = calculus.util.continuous_domain(f, x, S.Reals)
-    steckbrief['domain'] = str(domain)
+    domain = None
+    if not has_inverse_trig(fn_str):
+        # sympy returns wrong results for inverse trigonometric functions, see https://github.com/sympy/sympy/issues/21786
+        try:
+            domain = calculus.util.continuous_domain(f, x, S.Reals)
+        except Exception:
+            pass
+    steckbrief['domain'] = str(domain) if domain else domain
+
+    # Wertebereich
+    f_range = None
+    if not has_inverse_trig(fn_str):
+        try:
+            f_range = calculus.util.function_range(f, x, domain or S.Reals)
+        except Exception:
+            pass
+    steckbrief['range'] = str(f_range) if f_range else f_range
 
     # Unstetigkeitsstellen
-    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x, domain))
+    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x, domain or S.Reals))
     steckbrief['singularities'] = format_list(_singularities)
     steckbrief['singularities_count'] = singularities_count
 
@@ -62,17 +80,23 @@ def main(fn_str, queue):
         pass
 
     # y-Achsenschnitt
-    y_intercept = f.subs(x, 0)
-    steckbrief['y_intercept'] = y_intercept if y_intercept.is_real else None
+    try:
+        y_intercept = f.subs(x, 0)
+        steckbrief['y_intercept'] = y_intercept if y_intercept.is_real else None
+    except Exception:
+        pass
 
     # Nullstellen
-    _zeros, zeros_count, zeros_exact = itemgetter('zeros', 'zeros_count', 'zeros_exact')(zeros(f, x, domain))
+    _zeros, zeros_count, zeros_exact = itemgetter('zeros', 'zeros_count', 'zeros_exact')(zeros(f, x, domain or S.Reals))
     steckbrief['zeros'] = format_list(_zeros)
     steckbrief['zeros_count'] = zeros_count
     steckbrief['zeros_exact'] = str(zeros_exact)
 
     # Ableitung
-    steckbrief['derivative'] = diff(f, x)
+    try:
+        steckbrief['derivative'] = diff(f, x)
+    except Exception:
+        pass
 
     # Integral
     _integral, integral_elementary, integral_rules = itemgetter('integral', 'integral_elementary', 'integral_rules')(integral(f, x))
