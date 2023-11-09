@@ -30,6 +30,7 @@ converters = {
     'y_intercept': parse_number,
     'zeros': lambda x: handle_list(x, parse_number),
     'integral_rules': lambda x: handle_list(x, str),
+    'asymptotes': lambda x: handle_list(x, str),
 }
 
 extended_converters = {
