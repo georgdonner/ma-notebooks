@@ -1,7 +1,8 @@
 from sympy import parse_expr
 
 all_fields = [
-    'function', 'function_example', 'depth', 'leaves', 'polynomial', 'rational', 'domain', 'range',
+    'function', 'function_example', 'depth', 'leaves', 'nodes',
+    'polynomial', 'rational', 'domain', 'range',
     'singularities', 'singularities_count', 'limit_inf', 'limit_ninf', 'asymptotes', 'asymptotes_count', 
     'periodicity', 'y_intercept', 'zeros', 'zeros_count', 'zeros_exact',
     'derivative', 'integral', 'integral_elementary', 'integral_rules'

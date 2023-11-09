@@ -31,9 +31,10 @@ def main(fn_str, queue):
     steckbrief['function'] = fn_str
 
     # Metainformationen
-    depth, leaves = tree_props(f)
+    depth, leaves, nodes = tree_props(f)
     steckbrief['depth'] = depth
     steckbrief['leaves'] = leaves
+    steckbrief['nodes'] = nodes
 
     # Funktionstyp
     steckbrief['polynomial'] = bool(f.is_polynomial(x))

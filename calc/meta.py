@@ -21,8 +21,8 @@ class ArgStack:
                 else:
                     slice_end -= 1
             self.stack = self.stack[:slice_end]
-            if len(self.stack):
-                self.stack[-1][0] -= 1
+        if len(self.stack):
+            self.stack[-1][0] -= 1
 
 # this function is needed, because sympy always converts subtraction to addition
 # i.e. 1-x to 1+(-1)*x which introduces an extra leaf and level of depth
@@ -30,6 +30,7 @@ class ArgStack:
 # i.e. 4/(1-x) to 4*(1-x)^-1 which also introduces an extra leaf and level of depth
 def tree_props(f):
     leaves = 0
+    nodes = 0
     arg_stack = ArgStack()
     max_depth = 0
     marked_pows = []
@@ -40,6 +41,7 @@ def tree_props(f):
             # multiplication with -1
             if -1 in expr.args:
                 leaves -= 1
+                nodes -= 2 # nodes are always decreased by two, because *(-1) has two nodes
                 skip_depth = True
             # power of -1 which replaces division (can have multiple in one multiplication)
             if Pow in arg_types:
@@ -49,10 +51,12 @@ def tree_props(f):
                 # a multiplication of -1 and a marked pow in the same expression would reduce leaves and depth too much
                 if len(pows) and -1 in expr.args:
                     leaves += 1
+                    nodes += 2
                     skip_depth = False
 
         if expr.func == Pow and expr in marked_pows:
             leaves -= 1
+            nodes -= 2
             skip_depth = True
             marked_pows.remove(expr)
         
@@ -61,7 +65,7 @@ def tree_props(f):
             arg_stack.pop()
         else:
             arg_stack.push(len(expr.args), skip_depth)
-
+        nodes += max(1, len(expr.args) - 1)
         max_depth = max(max_depth, len(arg_stack))
-    return (max_depth, leaves)
+    return (max_depth, leaves, nodes)
 
