@@ -60,7 +60,7 @@ def main(fn_str, queue):
     steckbrief['range'] = str(f_range) if f_range else f_range
 
     # Unstetigkeitsstellen
-    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x, domain or S.Reals))
+    _singularities, singularities_count = itemgetter('singularities', 'singularities_count')(singularities(f, x))
     steckbrief['singularities'] = format_list(_singularities)
     steckbrief['singularities_count'] = singularities_count
 

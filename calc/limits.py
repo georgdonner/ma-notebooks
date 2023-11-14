@@ -13,11 +13,11 @@ def limits(f, x):
             limits[p] = None
     return limits
 
-def singularities(f, x, domain=S.Reals):
+def singularities(f, x):
     f_singularities = None
     singularities_count = None
     try:
-        all_singularities = calculus.singularities(f, x, domain)
+        all_singularities = calculus.singularities(f, x, S.Reals)
         if all_singularities.is_FiniteSet:
             f_singularities = []
             for s in all_singularities:
