@@ -21,8 +21,9 @@ def has_inverse_trig(fn_str):
     return 'asin' in fn_str or 'acos' in fn_str
 
 def main(fn_str, queue):
+    constants = ['k', 'm']
     x = Symbol('x', real=True)
-    f = sympify(re.sub(r"k", lambda _: str(random.choice([2,3,4])), fn_str), locals={'x': x})
+    f = sympify(re.sub(f"[{''.join(constants)}]", lambda _: str(random.choice([2,3,4])), fn_str), locals={'x': x})
 
     start = time.perf_counter()
 
