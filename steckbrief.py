@@ -106,7 +106,9 @@ def main(fn_str, queue):
     steckbrief['integral_elementary'] = integral_elementary
     steckbrief['integral_rules'] = format_list(integral_rules)
 
-    print(fn_str, time.perf_counter() - start)
+    computation_time = time.perf_counter() - start
+    steckbrief['computation_seconds'] = round(computation_time, 2)
+    print(fn_str, computation_time)
 
     queue.put(steckbrief)
 

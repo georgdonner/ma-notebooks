@@ -5,7 +5,8 @@ all_fields = [
     'polynomial', 'rational', 'domain', 'range',
     'singularities', 'singularities_count', 'limit_inf', 'limit_ninf', 'asymptotes', 'asymptotes_count', 
     'periodicity', 'y_intercept', 'zeros', 'zeros_count', 'zeros_exact',
-    'derivative', 'integral', 'integral_elementary', 'integral_rules'
+    'derivative', 'integral', 'integral_elementary', 'integral_rules',
+    'computation_seconds'
 ]
 
 def parse_sympy(x):
