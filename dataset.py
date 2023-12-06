@@ -35,7 +35,7 @@ class Dataset:
         filtered = self.df[self.df.apply(lambda x: fn(x[column]), axis=1)]
         return Dataset(dataframe=filtered)
     
-    def _filter_numerical(self, column, query, negate=False):
+    def filter_numerical(self, column, query, negate=False):
         if type(query) == int or type(query) == float:
             return self.is_equal(column, query, negate=negate)
         elif callable(query):
@@ -65,13 +65,13 @@ class Dataset:
     #### META PROPERTIES ####
 
     def depth(self, query, negate=False):
-        return self._filter_numerical('depth', query, negate=negate)
+        return self.filter_numerical('depth', query, negate=negate)
     
     def leaves(self, query, negate=False):
-        return self._filter_numerical('leaves', query, negate=negate)
+        return self.filter_numerical('leaves', query, negate=negate)
     
     def nodes(self, query, negate=False):
-        return self._filter_numerical('nodes', query, negate=negate)
+        return self.filter_numerical('nodes', query, negate=negate)
     
     def max_computation_time(self, seconds):
         return self.apply('computation_seconds', lambda x: x < seconds)
@@ -79,13 +79,13 @@ class Dataset:
     #### EXACT VALUES ####
 
     def y_intercept(self, query, negate=False):
-        return self._filter_numerical('y_intercept', query, negate=negate)
+        return self.filter_numerical('y_intercept', query, negate=negate)
     
     def limit_infinity(self, query, negate=False):
-        return self._filter_numerical('limit_inf', query, negate=negate)
+        return self.filter_numerical('limit_inf', query, negate=negate)
     
     def limit_negative_infinity(self, query, negate=False):
-        return self._filter_numerical('limit_ninf', query, negate=negate)
+        return self.filter_numerical('limit_ninf', query, negate=negate)
     
     def zero(self, value, negate=False):
         return self.has('zeros', value, negate=negate)
@@ -93,18 +93,16 @@ class Dataset:
     #### COUNTS ####
 
     def zeros_count(self, query, negate=False):
-        return self._filter_numerical('zeros_count', query, negate=negate)
+        return self.filter_numerical('zeros_count', query, negate=negate)
     
     def asymptotes_count(self, query, negate=False):
-        return self._filter_numerical('asymptotes_count', query, negate=negate)
+        return self.filter_numerical('asymptotes_count', query, negate=negate)
         
     def singularities_count(self, query, negate=False):
-        return self._filter_numerical('singularities_count', query, negate=negate)
+        return self.filter_numerical('singularities_count', query, negate=negate)
     
     #### OTHER PROPERTIES ####
         
     def integral_rule(self, rule, negate=False):
         return self.exists('integral').has('integral_rules', rule, negate=negate)
-
-
-ds = Dataset()
+    
