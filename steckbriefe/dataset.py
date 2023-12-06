@@ -1,5 +1,5 @@
 import pandas as pd
-from fields import csv_converters
+from steckbriefe.fields import csv_converters
 
 class Dataset:
     def __init__(self, dataframe=None, source='steckbriefe.csv', mode='default'):
@@ -10,7 +10,7 @@ class Dataset:
 
     #### GENERAL UTILITY FUNCTIONS ####
 
-    def random_function(self):
+    def random_steckbrief(self):
         if self.df.empty:
             return None
         return self.df.sample(1).to_dict('records')[0]

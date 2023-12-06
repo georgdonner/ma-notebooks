@@ -2,11 +2,11 @@ from operator import itemgetter
 import re, random, time
 from sympy import oo, S, Symbol, sympify, calculus, periodicity, diff
 
-from calc.meta import tree_props
-from calc.limits import limits, singularities
-from calc.asymptotes import asymptotes
-from calc.zeros import zeros
-from calc.integral import integral
+from steckbriefe.calc.meta import tree_props
+from steckbriefe.calc.limits import limits, singularities
+from steckbriefe.calc.asymptotes import asymptotes
+from steckbriefe.calc.zeros import zeros
+from steckbriefe.calc.integral import integral
 
 def format_list(l):
     if not l:
@@ -105,5 +105,3 @@ def calculate_steckbrief(fn_str):
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 
     return steckbrief
-
-print(calculate_steckbrief('m*x+k'))

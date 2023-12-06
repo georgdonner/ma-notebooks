@@ -3,8 +3,8 @@ from concurrent.futures import TimeoutError
 import multiprocessing as mp
 from pebble import ProcessPool
 
-from calc.steckbrief import calculate_steckbrief
-from fields import all_fields
+from steckbriefe.calc.steckbrief import calculate_steckbrief
+from steckbriefe.fields import all_fields
 
 def get_steckbrief(fn_str, queue):
     steckbrief = calculate_steckbrief(fn_str)
