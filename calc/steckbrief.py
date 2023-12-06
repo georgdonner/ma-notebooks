@@ -1,16 +1,12 @@
 from operator import itemgetter
-import re, random, csv, time
+import re, random, time
 from sympy import oo, S, Symbol, sympify, calculus, periodicity, diff
-from concurrent.futures import TimeoutError
-import multiprocessing as mp
-from pebble import ProcessPool
 
 from calc.meta import tree_props
 from calc.limits import limits, singularities
 from calc.asymptotes import asymptotes
 from calc.zeros import zeros
 from calc.integral import integral
-from fields import all_fields
 
 def format_list(l):
     if not l:
@@ -20,7 +16,7 @@ def format_list(l):
 def has_inverse_trig(fn_str):
     return 'asin' in fn_str or 'acos' in fn_str
 
-def main(fn_str, queue):
+def calculate_steckbrief(fn_str):
     constants = ['k', 'm']
     x = Symbol('x', real=True)
     f = sympify(re.sub(f"[{''.join(constants)}]", lambda _: str(random.choice([2,3,4])), fn_str), locals={'x': x})
@@ -106,55 +102,8 @@ def main(fn_str, queue):
     steckbrief['integral_elementary'] = integral_elementary
     steckbrief['integral_rules'] = format_list(integral_rules)
 
-    computation_time = time.perf_counter() - start
-    steckbrief['computation_seconds'] = round(computation_time, 2)
-    print(fn_str, computation_time)
-
-    queue.put(steckbrief)
+    steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 
     return steckbrief
 
-def queue_listener(queue, filename):
-    with open(filename, 'a', newline='', encoding='utf-8') as file:
-        while True:
-            payload = queue.get()
-            writer = csv.DictWriter(file, fieldnames = all_fields)
-            writer.writerow(payload)
-            file.flush()
-
-def done(future):
-    try:
-        future.result()
-    except TimeoutError as error:
-        print('Function timed out')
-    except Exception as error:
-        print('Function raised %s' % error)
-        print(error.traceback)
-
-if __name__ == "__main__":
-    timeout = 30
-    depth = 2
-    write_filename = f'steckbriefe{depth}.csv'
-    start = time.perf_counter()
-
-    manager = mp.Manager()
-    queue = manager.Queue()
-    queue_process = mp.Process(target=queue_listener, args=(queue, write_filename))
-    queue_process.start()
-
-    with open(write_filename, 'w', newline='') as writefile:
-        writer = csv.DictWriter(writefile, fieldnames = all_fields)
-        writer.writeheader()
-
-    with ProcessPool() as pool:
-        with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
-            for line in readfile:
-                if line != 'k':
-                    line = re.sub('\s+', '', line)
-                    future = pool.schedule(main, (line, queue), timeout=timeout)
-                    future.add_done_callback(done)
-        pool.close()
-        pool.join()
-        queue_process.kill()
-
-    print(f'Took {time.perf_counter() - start} seconds in total')
+print(calculate_steckbrief('m*x+k'))
