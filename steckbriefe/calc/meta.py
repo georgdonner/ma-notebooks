@@ -1,4 +1,4 @@
-from sympy import Atom, Mul, Pow, preorder_traversal
+from sympy import Atom, Mul, Pow, preorder_traversal, periodicity, Symbol
 
 class ArgStack:
     def __init__(self):
@@ -67,5 +67,21 @@ def tree_props(f):
             arg_stack.push(len(expr.args), skip_depth)
         nodes += max(1, len(expr.args) - 1)
         max_depth = max(max_depth, len(arg_stack))
-    return (max_depth, leaves, nodes)
+    return {
+        'depth': max_depth,
+        'leaves': leaves,
+        'nodes': nodes
+    }
 
+def fn_types(f, x=Symbol('x', real=True)):
+    period = None
+    try:
+        period = periodicity(f, x)
+    except Exception:
+        pass
+
+    return {
+        'polynomial': bool(f.is_polynomial(x)),
+        'rational': bool(f.is_rational_function(x)),
+        'periodicity': period,
+    }

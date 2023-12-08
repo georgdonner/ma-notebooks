@@ -1,4 +1,4 @@
-from sympy import integrate, Integral
+from sympy import integrate, Integral, Symbol
 from sympy.integrals.risch import NonElementaryIntegral
 from sympy.integrals.manualintegrate import integral_steps
 
@@ -22,7 +22,7 @@ def get_rule(step):
 def get_rules(steps):
     return list(dict.fromkeys((get_rule(steps))))
 
-def integral(f, x):
+def integral(f, x=Symbol('x', real=True)):
     integral = None
     integral_elementary = True
     integral_rules = []

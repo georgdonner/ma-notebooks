@@ -1,5 +1,6 @@
 import pandas as pd
 from steckbriefe.fields import csv_converters
+from steckbriefe.steckbrief import Steckbrief
 
 class Dataset:
     def __init__(self, dataframe=None, source='steckbriefe.csv', mode='default'):
@@ -13,7 +14,7 @@ class Dataset:
     def random_steckbrief(self):
         if self.df.empty:
             return None
-        return self.df.sample(1).to_dict('records')[0]
+        return Steckbrief(properties=self.df.sample(1).to_dict('records')[0])
     
     def exists(self, column, value=True):
         filtered = self.df[self.df[column].notna() if value == True else self.df[column].isna()]
@@ -50,16 +51,16 @@ class Dataset:
     
     #### BASIC PROPERTIES ####
 
-    def polynomial(self, value=True):
+    def is_polynomial(self, value=True):
         return self.is_equal('polynomial', value)
     
-    def rational(self, value=True):
+    def is_rational(self, value=True):
         return self.is_equal('rational', value)
     
-    def periodic(self, value=True):
+    def is_periodic(self, value=True):
         return self.exists('periodicity', value)
     
-    def integral_elementary(self, value=True):
+    def is_integral_elementary(self, value=True):
         return self.is_equal('integral_elementary', value)
     
     #### META PROPERTIES ####
@@ -87,7 +88,7 @@ class Dataset:
     def limit_negative_infinity(self, query, negate=False):
         return self.filter_numerical('limit_ninf', query, negate=negate)
     
-    def zero(self, value, negate=False):
+    def has_zero(self, value, negate=False):
         return self.has('zeros', value, negate=negate)
     
     #### COUNTS ####

@@ -1,7 +1,7 @@
-from sympy import S, solve, solveset, ConditionSet
+from sympy import S, solve, solveset, ConditionSet, Symbol
 from math import inf
 
-def zeros(f, x, domain=S.Reals):
+def zeros(f, x=Symbol('x', real=True), domain=S.Reals):
     zeros = None
     zeros_count = None
     zeros_exact = None

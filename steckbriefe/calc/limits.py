@@ -1,19 +1,20 @@
-from sympy import S, limit, Limit, oo, FiniteSet, AccumBounds, calculus
+from sympy import S, limit, Limit, oo, FiniteSet, AccumBounds, calculus, Symbol
 from math import inf
 
 invalid_limit_types = [AccumBounds, Limit]
 
-def limits(f, x):
+def limits(f, x=Symbol('x', real=True)):
     limits = {}
     for p in FiniteSet(-oo, oo):
+        key = 'limit_inf' if p == oo else 'limit_ninf'
         try:
             l = limit(f, x, p)
-            limits[p] = float(l)
+            limits[key] = float(l)
         except (TypeError, ValueError, NotImplementedError):
-            limits[p] = None
+            limits[key] = None
     return limits
 
-def singularities(f, x):
+def singularities(f, x=Symbol('x', real=True)):
     f_singularities = None
     singularities_count = None
     try:
