@@ -14,7 +14,7 @@ class Dataset:
     def random_steckbrief(self):
         if self.df.empty:
             return None
-        return Steckbrief(properties=self.df.sample(1).to_dict('records')[0])
+        return Steckbrief(self.df.sample(1).to_dict('records')[0])
     
     def exists(self, column, value=True):
         filtered = self.df[self.df[column].notna() if value == True else self.df[column].isna()]

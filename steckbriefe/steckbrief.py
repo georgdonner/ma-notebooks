@@ -1,20 +1,22 @@
-from sympy import Expr, Set, Symbol, parse_expr, sympify
+from sympy import Expr, Set, Symbol, sympify
 
-from steckbriefe.calc.steckbrief import calculate_steckbrief, randomize_function
+from steckbriefe.calc.steckbrief import randomize_function
 from steckbriefe.fields import all_fields_map
 
 default_param_range = [-5,-4,-3,-2,2,3,4,5]
 
 class Steckbrief:
 
-    def __init__(self, properties={}, function=None):
-        if function:
-            self.props = {'function': parse_expr(function)}
+    def __init__(self, options):
+        if type(options) == str:
+            self.props = {'function': sympify(options)}
             self.randomize()
-        elif not 'function' in properties:
-            raise ValueError("'function' property is required")
+        elif type(options) == dict:
+            if not 'function' in options:
+                raise ValueError("'function' property is required")
+            self.props = options
         else:
-            self.props = properties
+            raise ValueError("Invalid options supplied. Must either be a (function) string or dict of properties")
 
     @staticmethod
     def parse_value(value, _type):
@@ -22,7 +24,7 @@ class Steckbrief:
             return value
         if _type == Expr or _type == Set:
             try:
-                return parse_expr(value)
+                return sympify(value)
             except Exception:
                 return None
         try:
