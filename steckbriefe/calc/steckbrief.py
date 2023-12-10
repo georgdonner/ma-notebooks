@@ -7,7 +7,7 @@ from steckbriefe.calc.limits import limits, singularities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
 from steckbriefe.calc.integral import integral
-from steckbriefe.calc.derivative import derivative
+from steckbriefe.calc.derivative import derivative, extrema
 
 def format_list(l):
     if not l:
@@ -71,6 +71,9 @@ def calculate_steckbrief(fn_str):
 
     # Ableitung
     steckbrief.update(derivative(f, x))
+
+    # Extrema
+    steckbrief.update(extrema(f, x, fd=steckbrief['derivative']))
 
     # Integral
     steckbrief.update(integral(f, x))

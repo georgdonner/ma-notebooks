@@ -31,8 +31,8 @@ def done(future):
 
 if __name__ == "__main__":
     timeout = 30
-    depth = 1
-    write_filename = f'steckbriefe{depth}.csv'
+    depth = 2
+    write_filename = f'steckbriefe{depth}_ext.csv'
     start = time.perf_counter()
 
     manager = mp.Manager()

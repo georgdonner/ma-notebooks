@@ -139,6 +139,26 @@ class Steckbrief:
         return self.get_prop('derivative')
     
     @property
+    def derivative(self):
+        return self.get_prop('derivative')
+    
+    @property
+    def minima(self):
+        return self.get_prop('minima')
+    
+    @property
+    def maxima(self):
+        return self.get_prop('maxima')
+    
+    @property
+    def minima_count(self):
+        return self.get_prop('minima_count')
+    
+    @property
+    def maxima_count(self):
+        return self.get_prop('maxima_count')
+    
+    @property
     def integral(self):
         return self.get_prop('integral')
     

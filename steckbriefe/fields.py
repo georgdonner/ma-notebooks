@@ -6,7 +6,7 @@ from steckbriefe.calc.limits import limits, singularities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
 from steckbriefe.calc.integral import integral
-from steckbriefe.calc.derivative import derivative
+from steckbriefe.calc.derivative import derivative, extrema
 
 def parse_sympy(x):
     if x == '':
@@ -72,6 +72,11 @@ all_fields_map = {
         'type': float,
         'calculate': singularities,
     },
+    'singularities_exact': {
+        'type': Set,
+        'calculate': singularities,
+        'csv_converter_extended': parse_sympy,
+    },
     'limit_inf': {
         'type': float,
         'calculate': limits,
@@ -115,6 +120,30 @@ all_fields_map = {
     'derivative': {
         'type': Expr,
         'calculate': derivative,
+    },
+    'minima': {
+        'type': Set,
+        'calculate': extrema,
+    },
+    'maxima': {
+        'type': Set,
+        'calculate': extrema,
+    },
+    'minima_count': {
+        'type': float,
+        'calculate': extrema,
+    },
+    'maxima_count': {
+        'type': float,
+        'calculate': extrema,
+    },
+    'inflections': {
+        'type': Set,
+        'calculate': extrema,
+    },
+    'inflections_count': {
+        'type': float,
+        'calculate': extrema,
     },
     'integral': {
         'type': Expr,
