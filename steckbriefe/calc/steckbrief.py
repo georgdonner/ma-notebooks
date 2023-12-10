@@ -15,7 +15,7 @@ def format_list(l):
     return ','.join([str(n) for n in l])
 
 def randomize_function(fn_str, param_range=None, sympy_locals={}):
-    regex = r'[a-hk-w]'
+    regex = r'(?<!\w)[a-hk-w](?!\w)'
     n_constants = len(re.findall(regex, fn_str))
     if not param_range:
         param_range = list(range(2, n_constants + 3))
