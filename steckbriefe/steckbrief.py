@@ -97,6 +97,10 @@ class Steckbrief:
         return self.get_prop('range')
     
     @property
+    def singularities(self):
+        return self.get_prop('singularities')
+    
+    @property
     def singularities_count(self):
         return self.get_prop('singularities_count')
     
