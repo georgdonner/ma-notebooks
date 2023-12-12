@@ -42,8 +42,8 @@ def extrema(f, x=Symbol('x', real=True), fd=None):
                     n = Symbol('n')
                     minima += imageset(n, n*period+m, S.Integers)
             else:
-                minima = solveset(fdd > 0, x, fd_zeros)
-                maxima = solveset(fdd < 0, x, fd_zeros)
+                minima = solveset(fdd > 0, x, fd_zeros).simplify()
+                maxima = solveset(fdd < 0, x, fd_zeros).simplify()
     except Exception:
         minima = None
         maxima = None
@@ -60,15 +60,15 @@ def extrema(f, x=Symbol('x', real=True), fd=None):
                     n = Symbol('n')
                     inflections += imageset(n, n*period+i, S.Integers)
             else:
-                inflections = solveset(Ne(fddd, 0), x, fdd_zeros)
+                inflections = solveset(Ne(fddd, 0), x, fdd_zeros).simplify()
     except Exception:
         inflections = None
 
     return {
         'minima': process_set(minima),
         'maxima': process_set(maxima),
-        'minima_count': zero_count(f, x, minima),
-        'maxima_count': zero_count(f, x, maxima),
+        'minima_count': zero_count(minima),
+        'maxima_count': zero_count(maxima),
         'inflections': process_set(inflections),
-        'inflections_count': zero_count(f, x, inflections),
+        'inflections_count': zero_count(inflections),
     }
