@@ -1,4 +1,4 @@
-from sympy import calculus, periodicity as sym_periodicity, S, Symbol
+from sympy import calculus, periodicity as sym_periodicity, I, S, Symbol, solve
 
 def has_inverse_trig(fn_str):
     return 'asin' in fn_str or 'acos' in fn_str
@@ -53,3 +53,17 @@ def y_intercept(f, x=Symbol('x', real=True)):
     return {
         'y_intercept': y_intercept,
     }
+
+def inverse(f, x=Symbol('x', real=True)):
+    inverse = None
+    try:
+        y = Symbol('y', real=True)
+        inverses = [i.subs(y, x) for i in solve(f-y, x) if not i.has(I)]
+        if len(inverses) == 1:
+            inverse = inverses[0]
+    except Exception:
+        pass
+    return {
+        'inverse': inverse,
+    }
+    

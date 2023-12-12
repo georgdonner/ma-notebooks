@@ -2,7 +2,7 @@ import re, random, time, math
 from sympy import S, Symbol, sympify
 
 from steckbriefe.calc.meta import tree_props
-from steckbriefe.calc.util import fn_types, periodicity, y_intercept, domain, function_range
+from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
 from steckbriefe.calc.limits import limits, singularities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
@@ -77,6 +77,9 @@ def calculate_steckbrief(fn_str):
     # Integral
     steckbrief.update(integral(f, x))
     steckbrief['integral_rules'] = format_list(steckbrief['integral_rules'])
+
+    # Umkehrfunktion
+    steckbrief.update(inverse(f, x))
 
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 

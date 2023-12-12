@@ -32,7 +32,7 @@ def done(future):
 if __name__ == "__main__":
     timeout = 30
     depth = 2
-    write_filename = f'steckbriefe{depth}_ext.csv'
+    write_filename = f'steckbriefe{depth}.csv'
     start = time.perf_counter()
 
     manager = mp.Manager()
@@ -45,12 +45,11 @@ if __name__ == "__main__":
         writer.writeheader()
 
     with ProcessPool() as pool:
-        with open(f'uniques_ext_depth{depth}.csv', 'r') as readfile:
+        with open(f'uniques_ext_depth{depth}_final.csv', 'r') as readfile:
             for line in readfile:
-                if line != 'k':
-                    line = re.sub('\s+', '', line)
-                    future = pool.schedule(get_steckbrief, (line, queue), timeout=timeout)
-                    future.add_done_callback(done)
+                line = re.sub('\s+', '', line)
+                future = pool.schedule(get_steckbrief, (line, queue), timeout=timeout)
+                future.add_done_callback(done)
         pool.close()
         pool.join()
         queue_process.kill()
