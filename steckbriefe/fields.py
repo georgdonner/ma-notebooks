@@ -137,6 +137,22 @@ all_fields_map = {
         'type': float,
         'calculate': extrema,
     },
+    'global_minima': {
+        'type': Set,
+        'calculate': extrema,
+    },
+    'global_maxima': {
+        'type': Set,
+        'calculate': extrema,
+    },
+    'global_minima_count': {
+        'type': float,
+        'calculate': extrema,
+    },
+    'global_maxima_count': {
+        'type': float,
+        'calculate': extrema,
+    },
     'inflections': {
         'type': Set,
         'calculate': extrema,

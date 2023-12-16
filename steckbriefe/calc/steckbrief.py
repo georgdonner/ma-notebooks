@@ -72,7 +72,7 @@ def calculate_steckbrief(fn_str):
     steckbrief.update(derivative(f, x))
 
     # Extrema
-    steckbrief.update(extrema(f, x, fd=steckbrief['derivative']))
+    steckbrief.update(extrema(f, x, fd=steckbrief['derivative'], fn_range=steckbrief['range'], domain=steckbrief['domain'] or S.Reals))
 
     # Integral
     steckbrief.update(integral(f, x))

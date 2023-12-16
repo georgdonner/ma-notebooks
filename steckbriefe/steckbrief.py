@@ -149,20 +149,20 @@ class Steckbrief:
         return self.get_prop('derivative')
     
     @property
-    def minima(self):
-        return self.get_prop('minima')
+    def minima(self, global_only=False):
+        return self.get_prop('global_minima' if global_only else 'minima')
     
     @property
-    def maxima(self):
-        return self.get_prop('maxima')
+    def maxima(self, global_only=False):
+        return self.get_prop('global_maxima' if global_only else 'maxima')
     
     @property
-    def minima_count(self):
-        return self.get_prop('minima_count')
+    def minima_count(self, global_only=False):
+        return self.get_prop('global_minima_count' if global_only else 'minima_count')
     
     @property
-    def maxima_count(self):
-        return self.get_prop('maxima_count')
+    def maxima_count(self, global_only=False):
+        return self.get_prop('global_maxima_count' if global_only else 'maxima_count')
     
     @property
     def integral(self):
