@@ -1,0 +1,19 @@
+{
+  "max_depth": 2,
+  "variables": ["x"],
+  "constants": ["k"],
+  "operations": [
+    "+",
+    "-",
+    "*",
+    "/",
+    "sin",
+    "cos",
+    "exp",
+    "ln"
+  ],
+  "evaluate_expressions": true,
+  "allow_constant_expressions": false,
+  "unique_constants": false,
+  "single_range_constants": false
+}
