@@ -1,5 +1,5 @@
 import re, random, time, math
-from sympy import S, Symbol, sympify
+from sympy import S, Symbol, sympify, srepr
 
 from steckbriefe.calc.meta import tree_props
 from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
@@ -80,6 +80,12 @@ def calculate_steckbrief(fn_str):
 
     # Umkehrfunktion
     steckbrief.update(inverse(f, x))
+
+    # Serialisierung der SymPy-Ausdrücke
+    sympy_props = ['domain', 'range', 'singularities_exact', 'zeros_exact', 'minima', 'maxima', 'inflections']
+    for prop in sympy_props:
+        if prop in steckbrief:
+            steckbrief[prop] = srepr(steckbrief[prop])
 
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 
