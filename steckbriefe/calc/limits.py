@@ -23,13 +23,13 @@ def examine_singularity(f, x, value):
     left_limit = limit(f, x, value, '-')
     right_limit = limit(f, x, value, '+')
     if left_limit.is_real and left_limit == right_limit:
-        s_type = 'Hebbare Lücke'
+        s_type = 'removable'
     elif left_limit.is_real and right_limit.is_real and left_limit != right_limit:
-        s_type = 'Sprungstelle'
+        s_type = 'jump'
     elif any([not l for l in [left_limit, right_limit]]):
-        s_type = 'Wesentliche Singularität'
+        s_type = 'essential'
     elif all([l.is_number and not l.as_real_imag()[1] for l in [left_limit, right_limit]]):
-        s_type = 'Polstelle'
+        s_type = 'pole'
     if s_type:
         return {
             'value': value,

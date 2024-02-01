@@ -1,3 +1,4 @@
+import json
 from sympy import parse_expr, Expr, Set
 
 from steckbriefe.calc.meta import tree_props
@@ -21,6 +22,18 @@ def parse_number(x):
         return float(x)
     except ValueError:
         return parse_sympy(x)
+    
+def parse_singularity(singularity):
+    number_fields = ['value', 'left_limit', 'right_limit']
+    return {key: parse_number(val) if key in number_fields else val for key, val in singularity.items()}
+    
+def parse_singularity_json(s_json):
+    try:
+        sings = json.loads(s_json)
+        sings = [parse_singularity(s) for s in sings]
+        return sings
+    except Exception as e:
+        return [str(e)]
   
 def handle_list(list_str, fn):
     if not list_str:
@@ -65,8 +78,10 @@ all_fields_map = {
         'csv_converter_extended': parse_sympy,
     },
     'singularities': {
-        'type': str,
+        'type': [dict],
         'calculate': singularities,
+        'csv_converter': parse_singularity_json,
+        'api_converter': parse_singularity_json
     },
     'singularities_count': {
         'type': float,

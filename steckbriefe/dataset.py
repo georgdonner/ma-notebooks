@@ -91,6 +91,12 @@ class Dataset:
     def has_zero(self, value, negate=False):
         return self.has('zeros', value, negate=negate)
     
+    def has_singularity(self, value, negate=False):
+        return self.singularity_prop('value', value, negate=negate)
+    
+    def has_singularity_type(self, value, negate=False):
+        return self.singularity_prop('type', value, negate=negate)
+    
     #### COUNTS ####
 
     def zeros_count(self, query, negate=False):
@@ -106,4 +112,18 @@ class Dataset:
         
     def integral_rule(self, rule, negate=False):
         return self.exists('integral').has('integral_rules', rule, negate=negate)
+    
+    #### OTHER UTILS ####
+        
+    def singularity_prop(self, column, value, negate=False):
+        singularity_columns = ['value', 'type', 'left_limit', 'right_limit']
+        if not column in singularity_columns:
+            raise ValueError('Unsuppored singularity field')
+        exploded = self.df.explode('singularities')
+        exploded = exploded[exploded['singularities'].notna()]
+        exploded[singularity_columns] = exploded['singularities'].apply(pd.Series)
+        filtered = exploded[exploded[column] == value]
+        included = self.df.index.isin(filtered.index)
+        filtered = self.df[~included if negate else included]
+        return Dataset(dataframe=filtered)
     

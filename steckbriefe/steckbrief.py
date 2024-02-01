@@ -45,6 +45,9 @@ class Steckbrief:
 
     @staticmethod
     def parse_prop(prop, value):
+        prop_settings = all_fields_map[prop]
+        if 'api_converter' in prop_settings:
+            return prop_settings['api_converter'](value)
         prop_type = all_fields_map[prop]['type']
         if isinstance(prop_type, list):
             return Steckbrief.parse_list(value, prop_type[0])

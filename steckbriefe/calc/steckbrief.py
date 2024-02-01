@@ -14,6 +14,9 @@ def format_list(l):
         return ''
     return ','.join([str(n) for n in l])
 
+def dict_str_values(d):
+    return {key: str(val) for key, val in d.items()}
+
 def randomize_function(fn_str, param_range=None, sympy_locals={}):
     regex = r'(?<!\w)[a-hk-w](?!\w)'
     n_constants = len(re.findall(regex, fn_str))
@@ -85,7 +88,8 @@ def calculate_steckbrief(fn_str):
     for prop in sympy_props:
         if prop in steckbrief:
             steckbrief[prop] = srepr(steckbrief[prop])
-    steckbrief['singularities'] = json.dumps(steckbrief['singularities'])
+    steckbrief['singularities'] = [dict_str_values(d) for d in steckbrief['singularities']]
+    steckbrief['singularities'] = json.dumps(steckbrief['singularities'], ensure_ascii=False)
 
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 

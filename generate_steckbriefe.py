@@ -45,7 +45,7 @@ if __name__ == "__main__":
         writer.writeheader()
 
     with ProcessPool() as pool:
-        with open(f'uniques_ext_depth{depth}_final.csv', 'r') as readfile:
+        with open(f'expressions_depth{depth}.csv', 'r') as readfile:
             for line in readfile:
                 line = re.sub('\s+', '', line)
                 future = pool.schedule(get_steckbrief, (line, queue), timeout=timeout)
