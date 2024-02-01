@@ -31,7 +31,12 @@ def examine_singularity(f, x, value):
     elif all([l.is_number and not l.as_real_imag()[1] for l in [left_limit, right_limit]]):
         s_type = 'Polstelle'
     if s_type:
-        return (value, s_type, (left_limit, right_limit))
+        return {
+            'value': value,
+            'type': s_type,
+            'left_limit': left_limit,
+            'right_limit': right_limit,
+        }
     print('Could not determine type of singularity for ', f, value)
     return None
 

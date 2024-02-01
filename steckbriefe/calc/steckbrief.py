@@ -1,4 +1,4 @@
-import re, random, time, math
+import re, random, time, math, json
 from sympy import S, Symbol, sympify, srepr
 
 from steckbriefe.calc.meta import tree_props
@@ -49,7 +49,6 @@ def calculate_steckbrief(fn_str):
 
     # Unstetigkeitsstellen
     steckbrief.update(singularities(f, x))
-    steckbrief['singularities'] = format_list(steckbrief['singularities'])
 
     # Grenzwerte
     steckbrief.update(limits(f, x))
@@ -81,11 +80,12 @@ def calculate_steckbrief(fn_str):
     # Umkehrfunktion
     steckbrief.update(inverse(f, x))
 
-    # Serialisierung der SymPy-Ausdrücke
+    # Serialisierung
     sympy_props = ['domain', 'range', 'singularities_exact', 'zeros_exact', 'minima', 'maxima', 'inflections']
     for prop in sympy_props:
         if prop in steckbrief:
             steckbrief[prop] = srepr(steckbrief[prop])
+    steckbrief['singularities'] = json.dumps(steckbrief['singularities'])
 
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 

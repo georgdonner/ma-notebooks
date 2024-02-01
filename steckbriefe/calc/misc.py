@@ -1,4 +1,5 @@
-from sympy import calculus, periodicity as sym_periodicity, I, S, Symbol, solve
+from sympy import calculus, diff, periodicity as sym_periodicity, I, S, Symbol, solve
+from sympy.solvers.inequalities import solve_univariate_inequality
 
 def has_inverse_trig(fn_str):
     return 'asin' in fn_str or 'acos' in fn_str
@@ -27,9 +28,10 @@ def function_range(f, x=Symbol('x', real=True)):
     }
 
 def fn_types(f, x=Symbol('x', real=True)):
+    polynomial = bool(f.is_polynomial(x))
     return {
-        'polynomial': bool(f.is_polynomial(x)),
-        'rational': bool(f.is_rational_function(x)),
+        'polynomial': polynomial,
+        'rational': not polynomial and bool(f.is_rational_function(x)),
     }
 
 def periodicity(f, x=Symbol('x', real=True)):
@@ -66,4 +68,23 @@ def inverse(f, x=Symbol('x', real=True)):
     return {
         'inverse': inverse,
     }
+
+def monotonicity(f, x=Symbol('x', real=True)):
+    decreasing = None
+    increasing = None
+    try:
+        decreasing = calculus.is_decreasing(f, symbol=x)
+        increasing = calculus.is_increasing(f, symbol=x)
+    except Exception:
+        pass
+    return {
+        'decreasing': decreasing,
+        'increasing': increasing,
+    }
+
+def convexity(f, x=Symbol('x', real=True), singularities=None):
+    fdd = diff(f, x, x) < 0
+    if solve_univariate_inequality(fdd < 0, x, False, S.Reals):
+        return False
+    return True
     

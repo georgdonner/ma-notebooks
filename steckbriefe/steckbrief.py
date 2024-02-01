@@ -145,10 +145,6 @@ class Steckbrief:
         return self.get_prop('derivative')
     
     @property
-    def derivative(self):
-        return self.get_prop('derivative')
-    
-    @property
     def minima(self, global_only=False):
         return self.get_prop('global_minima' if global_only else 'minima')
     
