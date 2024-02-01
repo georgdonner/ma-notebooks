@@ -100,12 +100,12 @@ class Steckbrief:
         return self.get_prop('range')
     
     @property
-    def singularities(self):
-        return self.get_prop('singularities')
+    def discontinuities(self):
+        return self.get_prop('discontinuities')
     
     @property
-    def singularities_count(self):
-        return self.get_prop('singularities_count')
+    def discontinuities_count(self):
+        return self.get_prop('discontinuities_count')
     
     @property
     def limit_infinity(self):

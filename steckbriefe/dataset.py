@@ -91,11 +91,11 @@ class Dataset:
     def has_zero(self, value, negate=False):
         return self.has('zeros', value, negate=negate)
     
-    def has_singularity(self, value, negate=False):
-        return self.singularity_prop('value', value, negate=negate)
+    def has_discontinuity(self, value, negate=False):
+        return self.discontinuity_prop('value', value, negate=negate)
     
-    def has_singularity_type(self, value, negate=False):
-        return self.singularity_prop('type', value, negate=negate)
+    def has_discontinuity_type(self, value, negate=False):
+        return self.discontinuity_prop('type', value, negate=negate)
     
     #### COUNTS ####
 
@@ -105,8 +105,8 @@ class Dataset:
     def asymptotes_count(self, query, negate=False):
         return self.filter_numerical('asymptotes_count', query, negate=negate)
         
-    def singularities_count(self, query, negate=False):
-        return self.filter_numerical('singularities_count', query, negate=negate)
+    def discontinuities_count(self, query, negate=False):
+        return self.filter_numerical('discontinuities_count', query, negate=negate)
     
     #### OTHER PROPERTIES ####
         
@@ -115,13 +115,13 @@ class Dataset:
     
     #### OTHER UTILS ####
         
-    def singularity_prop(self, column, value, negate=False):
-        singularity_columns = ['value', 'type', 'left_limit', 'right_limit']
-        if not column in singularity_columns:
-            raise ValueError('Unsuppored singularity field')
-        exploded = self.df.explode('singularities')
-        exploded = exploded[exploded['singularities'].notna()]
-        exploded[singularity_columns] = exploded['singularities'].apply(pd.Series)
+    def discontinuity_prop(self, column, value, negate=False):
+        discontinuity_columns = ['value', 'type', 'left_limit', 'right_limit']
+        if not column in discontinuity_columns:
+            raise ValueError('Unsuppored discontinuity field')
+        exploded = self.df.explode('discontinuities')
+        exploded = exploded[exploded['discontinuities'].notna()]
+        exploded[discontinuity_columns] = exploded['discontinuities'].apply(pd.Series)
         filtered = exploded[exploded[column] == value]
         included = self.df.index.isin(filtered.index)
         filtered = self.df[~included if negate else included]

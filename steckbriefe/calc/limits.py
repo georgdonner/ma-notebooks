@@ -18,7 +18,7 @@ def limits(f, x=Symbol('x', real=True)):
             limits[key] = None
     return limits
 
-def examine_singularity(f, x, value):
+def examine_discontinuity(f, x, value):
     s_type = None
     left_limit = limit(f, x, value, '-')
     right_limit = limit(f, x, value, '+')
@@ -28,7 +28,8 @@ def examine_singularity(f, x, value):
         s_type = 'jump'
     elif any([not l for l in [left_limit, right_limit]]):
         s_type = 'essential'
-    elif all([l.is_number and not l.as_real_imag()[1] for l in [left_limit, right_limit]]):
+    # elif all([l.is_number and not l.as_real_imag()[1] for l in [left_limit, right_limit]]):
+    elif abs(left_limit) == oo and abs(right_limit) == oo:
         s_type = 'pole'
     if s_type:
         return {
@@ -37,7 +38,7 @@ def examine_singularity(f, x, value):
             'left_limit': left_limit,
             'right_limit': right_limit,
         }
-    print('Could not determine type of singularity for ', f, value)
+    print('Could not determine type of discontinuity for ', f, value)
     return None
 
 # Code copied and modified from Sympy source code,
@@ -72,10 +73,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 """
-def singularities(f, x=Symbol('x', real=True)):
-    sings = []
-    sings_exact = S.EmptySet
-    sings_count = 0
+def discontinuities(f, x=Symbol('x', real=True)):
+    dc = []
+    dc_exact = S.EmptySet
+    dc_count = 0
     try:
         # log <= 0
         check_expressions = set([i.args[0] for i in f.atoms(log)])
@@ -88,21 +89,21 @@ def singularities(f, x=Symbol('x', real=True)):
         
         for expr in check_expressions:
             values, values_exact, count = itemgetter('zeros', 'zeros_exact', 'zeros_count')(zeros(expr, x, throw=True))
-            examined = [examine_singularity(f, x, value) for value in values]
+            examined = [examine_discontinuity(f, x, value) for value in values]
             filtered = [i for i in examined if i]
-            sings += filtered
+            dc += filtered
             if type(count) == int and len(values) != len(filtered):
                 count = len(filtered)
-            sings_count += count
-            sings_exact += values_exact
+            dc_count += count
+            dc_exact += values_exact
     except Exception:
-        print('singularities calculation failed for: ', f)
-        sings = []
-        sings_exact = None
-        sings_count = None
+        print('discontinuities calculation failed for: ', f)
+        dc = []
+        dc_exact = None
+        dc_count = None
 
     return {
-        'singularities': sings,
-        'singularities_count': sings_count,
-        'singularities_exact': sings_exact,
+        'discontinuities': dc,
+        'discontinuities_count': dc_count,
+        'discontinuities_exact': dc_exact,
     }

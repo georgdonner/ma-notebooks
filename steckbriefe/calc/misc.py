@@ -82,7 +82,7 @@ def monotonicity(f, x=Symbol('x', real=True)):
         'increasing': increasing,
     }
 
-def convexity(f, x=Symbol('x', real=True), singularities=None):
+def convexity(f, x=Symbol('x', real=True), discontinuities=None):
     fdd = diff(f, x, x) < 0
     if solve_univariate_inequality(fdd < 0, x, False, S.Reals):
         return False

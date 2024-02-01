@@ -3,7 +3,7 @@ from sympy import parse_expr, Expr, Set
 
 from steckbriefe.calc.meta import tree_props
 from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
-from steckbriefe.calc.limits import limits, singularities
+from steckbriefe.calc.limits import limits, discontinuities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
 from steckbriefe.calc.integral import integral
@@ -23,14 +23,14 @@ def parse_number(x):
     except ValueError:
         return parse_sympy(x)
     
-def parse_singularity(singularity):
+def parse_discontinuity(discontinuity):
     number_fields = ['value', 'left_limit', 'right_limit']
-    return {key: parse_number(val) if key in number_fields else val for key, val in singularity.items()}
+    return {key: parse_number(val) if key in number_fields else val for key, val in discontinuity.items()}
     
-def parse_singularity_json(s_json):
+def parse_discontinuity_json(s_json):
     try:
         sings = json.loads(s_json)
-        sings = [parse_singularity(s) for s in sings]
+        sings = [parse_discontinuity(s) for s in sings]
         return sings
     except Exception as e:
         return [str(e)]
@@ -77,19 +77,19 @@ all_fields_map = {
         'calculate': function_range,
         'csv_converter_extended': parse_sympy,
     },
-    'singularities': {
+    'discontinuities': {
         'type': [dict],
-        'calculate': singularities,
-        'csv_converter': parse_singularity_json,
-        'api_converter': parse_singularity_json
+        'calculate': discontinuities,
+        'csv_converter': parse_discontinuity_json,
+        'api_converter': parse_discontinuity_json
     },
-    'singularities_count': {
+    'discontinuities_count': {
         'type': float,
-        'calculate': singularities,
+        'calculate': discontinuities,
     },
-    'singularities_exact': {
+    'discontinuities_exact': {
         'type': Set,
-        'calculate': singularities,
+        'calculate': discontinuities,
         'csv_converter_extended': parse_sympy,
     },
     'limit_inf': {

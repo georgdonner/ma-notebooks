@@ -3,7 +3,7 @@ from sympy import S, Symbol, sympify, srepr
 
 from steckbriefe.calc.meta import tree_props
 from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
-from steckbriefe.calc.limits import limits, singularities
+from steckbriefe.calc.limits import limits, discontinuities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
 from steckbriefe.calc.integral import integral
@@ -51,7 +51,7 @@ def calculate_steckbrief(fn_str):
     steckbrief.update(function_range(f, x))
 
     # Unstetigkeitsstellen
-    steckbrief.update(singularities(f, x))
+    steckbrief.update(discontinuities(f, x))
 
     # Grenzwerte
     steckbrief.update(limits(f, x))
@@ -84,12 +84,12 @@ def calculate_steckbrief(fn_str):
     steckbrief.update(inverse(f, x))
 
     # Serialisierung
-    sympy_props = ['domain', 'range', 'singularities_exact', 'zeros_exact', 'minima', 'maxima', 'inflections']
+    sympy_props = ['domain', 'range', 'discontinuities_exact', 'zeros_exact', 'minima', 'maxima', 'inflections']
     for prop in sympy_props:
         if prop in steckbrief:
             steckbrief[prop] = srepr(steckbrief[prop])
-    steckbrief['singularities'] = [dict_str_values(d) for d in steckbrief['singularities']]
-    steckbrief['singularities'] = json.dumps(steckbrief['singularities'], ensure_ascii=False)
+    steckbrief['discontinuities'] = [dict_str_values(d) for d in steckbrief['discontinuities']]
+    steckbrief['discontinuities'] = json.dumps(steckbrief['discontinuities'], ensure_ascii=False)
 
     steckbrief['computation_seconds'] = round(time.perf_counter() - start, 2)
 
