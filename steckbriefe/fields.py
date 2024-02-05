@@ -2,7 +2,7 @@ import json
 from sympy import parse_expr, Expr, Set
 
 from steckbriefe.calc.meta import tree_props
-from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
+from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse, monotonicity, convexity
 from steckbriefe.calc.limits import limits, discontinuities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
@@ -167,6 +167,22 @@ all_fields_map = {
     'global_maxima_count': {
         'type': float,
         'calculate': extrema,
+    },
+    'increasing': {
+        'type': bool,
+        'calculate': monotonicity,
+    },
+    'decreasing': {
+        'type': bool,
+        'calculate': monotonicity,
+    },
+    'convex': {
+        'type': bool,
+        'calculate': convexity,
+    },
+    'concave': {
+        'type': bool,
+        'calculate': convexity,
     },
     'inflections': {
         'type': Set,

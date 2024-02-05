@@ -28,7 +28,6 @@ def examine_discontinuity(f, x, value):
         s_type = 'jump'
     elif any([not l for l in [left_limit, right_limit]]):
         s_type = 'essential'
-    # elif all([l.is_number and not l.as_real_imag()[1] for l in [left_limit, right_limit]]):
     elif abs(left_limit) == oo and abs(right_limit) == oo:
         s_type = 'pole'
     if s_type:

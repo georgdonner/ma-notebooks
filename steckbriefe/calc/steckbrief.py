@@ -2,7 +2,7 @@ import re, random, time, math, json
 from sympy import S, Symbol, sympify, srepr
 
 from steckbriefe.calc.meta import tree_props
-from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse
+from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse, monotonicity, convexity
 from steckbriefe.calc.limits import limits, discontinuities
 from steckbriefe.calc.asymptotes import asymptotes
 from steckbriefe.calc.zeros import zeros
@@ -75,6 +75,10 @@ def calculate_steckbrief(fn_str):
 
     # Extrema
     steckbrief.update(extrema(f, x, fd=steckbrief['derivative'], fn_range=steckbrief['range'], domain=steckbrief['domain'] or S.Reals))
+
+    # Monotonie und Konvexität
+    steckbrief.update(monotonicity(f, x))
+    steckbrief.update(convexity(f, x, discontinuities=steckbrief['discontinuities'], domain=steckbrief['domain']))
 
     # Integral
     steckbrief.update(integral(f, x))

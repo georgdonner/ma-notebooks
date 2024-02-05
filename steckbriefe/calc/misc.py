@@ -82,9 +82,24 @@ def monotonicity(f, x=Symbol('x', real=True)):
         'increasing': increasing,
     }
 
-def convexity(f, x=Symbol('x', real=True), discontinuities=None):
-    fdd = diff(f, x, x) < 0
-    if solve_univariate_inequality(fdd < 0, x, False, S.Reals):
-        return False
-    return True
+def convexity(f, x=Symbol('x', real=True), discontinuities=None, domain=None):
+    if discontinuities and len(discontinuities):
+        return {
+            'convex': False,
+            'concave': False,
+        }
+    is_continuous = domain == S.Reals
+    is_convex = None
+    is_concave = None
+    try:
+        fdd = diff(f, x, x)
+        is_convex = not solve_univariate_inequality(fdd < 0, x, False, S.Reals, continuous=is_continuous)
+        fdd = diff(-f, x, x)
+        is_concave = not solve_univariate_inequality(fdd < 0, x, False, S.Reals, continuous=is_continuous)
+    except Exception:
+        pass
+    return {
+        'convex': is_convex,
+        'concave': is_concave,
+    }
     
