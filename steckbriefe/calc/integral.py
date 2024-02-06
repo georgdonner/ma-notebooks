@@ -39,7 +39,7 @@ def integral(f, x=Symbol('x', real=True)):
             integral_rules = []
         if len(integral.atoms(Integral)):
             integral = None
-    except NotImplementedError:
+    except Exception:
         integral = None
         integral_elementary = None
 

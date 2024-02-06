@@ -9,13 +9,13 @@ config = Config()
 leaf_values = list(config.constants + config.variables)
 
 def generate_trees(tree):
-    leaves = list(tree.filter_nodes(lambda n: n.is_leaf() and n.data not in config.leaf_values))
+    leaves = list(tree.filter_nodes(lambda n: n.is_leaf() and n.data not in config.symbols))
     if len(leaves) == 0:
         yield tree
     else:
         leaf = leaves[0]
         op = leaf.data
-        possible_nodes = config.leaf_values if tree.depth(leaf) == config.max_depth - 1 else config.leaf_values + config.operations
+        possible_nodes = config.symbols if tree.depth(leaf) == config.max_depth - 1 else config.symbols + config.operations
         if op.is_binary:
             for left, right in product(possible_nodes, repeat=2):
                 new_tree = deepcopy(tree)
@@ -30,7 +30,7 @@ def generate_trees(tree):
 
 def evaluate(tree):
     node = tree[tree.root]
-    if node.data in config.leaf_values:
+    if node.data in config.symbols:
         return node.data
     op = node.data
     if op.is_binary:

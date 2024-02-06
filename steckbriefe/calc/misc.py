@@ -21,6 +21,8 @@ def function_range(f, x=Symbol('x', real=True)):
     if not has_inverse_trig(str(f)):
         try:
             fn_range = calculus.util.function_range(f, x, S.Reals)
+            if fn_range == S.Reals:
+                fn_range = S.Reals
         except Exception:
             pass
     return {

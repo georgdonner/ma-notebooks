@@ -30,9 +30,9 @@ def done(future):
         print(error.traceback)
 
 if __name__ == "__main__":
-    timeout = 30
-    depth = 2
-    write_filename = f'steckbriefe{depth}.csv'
+    timeout = 10
+    depth = 3
+    write_filename = f'steckbriefe_timeout{timeout}_depth{depth}.csv'
     start = time.perf_counter()
 
     manager = mp.Manager()
@@ -46,10 +46,11 @@ if __name__ == "__main__":
 
     with ProcessPool() as pool:
         with open(f'expressions_depth{depth}.csv', 'r') as readfile:
-            for line in readfile:
-                line = re.sub('\s+', '', line)
-                future = pool.schedule(get_steckbrief, (line, queue), timeout=timeout)
-                future.add_done_callback(done)
+            for index, line in enumerate(readfile):
+                if index < 500:
+                    line = re.sub('\s+', '', line)
+                    future = pool.schedule(get_steckbrief, (line, queue), timeout=timeout)
+                    future.add_done_callback(done)
         pool.close()
         pool.join()
         queue_process.kill()

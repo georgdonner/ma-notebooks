@@ -1,5 +1,5 @@
 import re, random, time, math, json
-from sympy import S, Symbol, sympify, srepr
+from sympy import S, Symbol, sympify, srepr, FiniteSet
 
 from steckbriefe.calc.meta import tree_props
 from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse, monotonicity, convexity
@@ -91,7 +91,9 @@ def calculate_steckbrief(fn_str):
     sympy_props = ['domain', 'range', 'discontinuities_exact', 'zeros_exact', 'minima', 'maxima', 'inflections']
     for prop in sympy_props:
         if prop in steckbrief:
-            steckbrief[prop] = srepr(steckbrief[prop])
+            val = steckbrief[prop]
+            if val and type(val) != FiniteSet:
+                steckbrief[prop] = srepr(val)
     steckbrief['discontinuities'] = [dict_str_values(d) for d in steckbrief['discontinuities']]
     steckbrief['discontinuities'] = json.dumps(steckbrief['discontinuities'], ensure_ascii=False)
 

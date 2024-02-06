@@ -99,5 +99,5 @@ class Config:
         self.operations = [Operation(op, evaluate=self.evaluate_expressions) for op in parsed_config.get('operations', ['+', '-', '*', '/'])]
 
     @property
-    def leaf_values(self):
+    def symbols(self):
         return list(self.variables + self.constants)
