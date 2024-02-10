@@ -84,17 +84,17 @@ class Config:
         with open(filename) as f:
             parsed_config = json.load(f)
 
-            self.max_depth = parsed_config.get('max_depth', 2)
-            self.evaluate_expressions = parsed_config.get('evaluate_expressions', True)
-            self.allow_constant_expressions = parsed_config.get('allow_constant_expressions', False)
-            self.unique_constants = parsed_config.get('unique_constants', False)
-            if self.unique_constants:
-                self.single_range_constants = parsed_config.get('single_range_constants', False)
-            else:
-                self.single_range_constants = False
+        self.max_depth = parsed_config.get('max_depth', 2)
+        self.evaluate_expressions = parsed_config.get('evaluate_expressions', True)
+        self.allow_constant_expressions = parsed_config.get('allow_constant_expressions', False)
+        self.unique_constants = parsed_config.get('unique_constants', False)
+        if self.unique_constants:
+            self.single_range_constants = parsed_config.get('single_range_constants', False)
+        else:
+            self.single_range_constants = False
 
-            self.variables = symbols(' '.join(parsed_config.get('variables', ['x'])), real=True, seq=True)
-            self.constants = symbols(' '.join(parsed_config.get('constants', ['k'])), real=True, seq=True)
+        self.variables = symbols(' '.join(parsed_config.get('variables', ['x'])), real=True, seq=True)
+        self.constants = symbols(' '.join(parsed_config.get('constants', ['k'])), real=True, seq=True)
 
         self.operations = [Operation(op, evaluate=self.evaluate_expressions) for op in parsed_config.get('operations', ['+', '-', '*', '/'])]
 

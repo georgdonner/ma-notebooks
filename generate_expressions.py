@@ -1,8 +1,12 @@
-import re, time, sys
+import argparse, re, time, sys
+from argparse import ArgumentParser
 from sympy import sympify, Symbol, Mul, Function
 from config import Config
 
-config = Config(filename='config.json')
+parser = argparse.ArgumentParser("expression_generator")
+parser.add_argument('-c', '--config', help='path to a valid config file', default='default_config.json')
+args = parser.parse_args()
+config = Config(args.config)
 
 def duplicate_constants(left, right):
     left_consts = left.atoms(Symbol) - set(config.variables)

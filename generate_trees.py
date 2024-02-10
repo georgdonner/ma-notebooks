@@ -1,12 +1,14 @@
+import argparse
 from copy import deepcopy
 from itertools import product
 from treelib import Tree
 
 from config import Config
 
-config = Config()
-
-leaf_values = list(config.constants + config.variables)
+parser = argparse.ArgumentParser("expression_generator")
+parser.add_argument('-c', '--config', help='path to a valid config file', default='default_config.json')
+args = parser.parse_args()
+config = Config(args.config)
 
 def generate_trees(tree):
     leaves = list(tree.filter_nodes(lambda n: n.is_leaf() and n.data not in config.symbols))

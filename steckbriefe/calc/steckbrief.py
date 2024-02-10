@@ -1,5 +1,6 @@
 import re, random, time, math, json
 from sympy import S, Symbol, sympify, srepr, FiniteSet
+from sympy.printing import mathml, latex
 
 from steckbriefe.calc.meta import tree_props
 from steckbriefe.calc.misc import fn_types, periodicity, y_intercept, domain, function_range, inverse, monotonicity, convexity
@@ -28,7 +29,7 @@ def randomize_function(fn_str, param_range=None, sympy_locals={}):
         return str(param_range.pop(random.choice(range(0, len(param_range)))))
     return sympify(re.sub(regex, replace_constant, fn_str), locals=sympy_locals)
 
-def calculate_steckbrief(fn_str):
+def calculate_steckbrief(fn_str, serialize='sympy'):
     x = Symbol('x', real=True)
     f = randomize_function(fn_str, sympy_locals={'x': x})
 
@@ -93,7 +94,12 @@ def calculate_steckbrief(fn_str):
         if prop in steckbrief:
             val = steckbrief[prop]
             if val and type(val) != FiniteSet:
-                steckbrief[prop] = srepr(val)
+                if serialize == 'sympy':
+                    steckbrief[prop] = srepr(val)
+                elif serialize == 'mathml':
+                    steckbrief[prop] = mathml(val)
+                elif serialize == 'latex':
+                    steckbrief[prop] = latex(val)
     steckbrief['discontinuities'] = [dict_str_values(d) for d in steckbrief['discontinuities']]
     steckbrief['discontinuities'] = json.dumps(steckbrief['discontinuities'], ensure_ascii=False)
 
