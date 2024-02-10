@@ -10,7 +10,7 @@ def asymptotes(f, x=Symbol('x', real=True)):
                     n = limit(f-m*x, x, lim)
                     if n.is_real and n.is_number:
                         asyms.add(m*x+n)
-            except Exception:
+            except Exception as e:
                 pass
     return {
         'asymptotes': list(asyms),

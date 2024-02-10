@@ -14,13 +14,13 @@ def parse_sympy(x):
         return float('nan')
     try:
         return parse_expr(x)
-    except ValueError:
+    except Exception:
         return float('nan')
 
 def parse_number(x):
     try:
         return float(x)
-    except ValueError:
+    except Exception:
         return parse_sympy(x)
     
 def parse_discontinuity(discontinuity):
@@ -29,11 +29,11 @@ def parse_discontinuity(discontinuity):
     
 def parse_discontinuity_json(s_json):
     try:
-        sings = json.loads(s_json)
+        sings = json.loads(s_json) if type(s_json) == str else s_json
         sings = [parse_discontinuity(s) for s in sings]
         return sings
     except Exception as e:
-        return [str(e)]
+        return []
   
 def handle_list(list_str, fn):
     if not list_str:
@@ -62,10 +62,12 @@ all_fields_map = {
     'polynomial': {
         'type': bool,
         'calculate': fn_types,
+        'dtype': 'boolean',
     },
     'rational': {
         'type': bool,
         'calculate': fn_types,
+        'dtype': 'boolean',
     },
     'domain': {
         'type': Set,
@@ -171,18 +173,22 @@ all_fields_map = {
     'increasing': {
         'type': bool,
         'calculate': monotonicity,
+        'dtype': 'boolean',
     },
     'decreasing': {
         'type': bool,
         'calculate': monotonicity,
+        'dtype': 'boolean',
     },
     'convex': {
         'type': bool,
         'calculate': convexity,
+        'dtype': 'boolean',
     },
     'concave': {
         'type': bool,
         'calculate': convexity,
+        'dtype': 'boolean',
     },
     'inflections': {
         'type': Set,
@@ -199,6 +205,7 @@ all_fields_map = {
     'integral_elementary': {
         'type': bool,
         'calculate': integral,
+        'dtype': 'boolean',
     },
     'integral_rules': {
         'type': [str],
@@ -216,14 +223,16 @@ all_fields_map = {
 
 all_fields = all_fields_map.keys()
 
-converters = {key:field['csv_converter'] for key, field in all_fields_map.items() if 'csv_converter' in field}
-extended_converters = {key:field['csv_converter_extended'] for key, field in all_fields_map.items() if 'csv_converter_extended' in field}
-extended_converters = {
-    **converters,
-    **extended_converters,
-}
-
 def csv_converters(mode='default'):
+    converters = {key:field['csv_converter'] for key, field in all_fields_map.items() if 'csv_converter' in field}
     if mode == 'extended':
+        extended_converters = {key:field['csv_converter_extended'] for key, field in all_fields_map.items() if 'csv_converter_extended' in field}
+        extended_converters = {
+            **converters,
+            **extended_converters,
+        }
         return extended_converters
     return converters
+
+def csv_dtypes():
+    return {key:field['dtype'] for key, field in all_fields_map.items() if 'dtype' in field}

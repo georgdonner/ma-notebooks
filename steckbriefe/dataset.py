@@ -1,5 +1,5 @@
 import pandas as pd
-from steckbriefe.fields import csv_converters
+from steckbriefe.fields import csv_converters, csv_dtypes
 from steckbriefe.steckbrief import Steckbrief
 
 class Dataset:
@@ -7,7 +7,7 @@ class Dataset:
         if dataframe is not None:
             self.df = dataframe
         else:
-            self.df = pd.read_csv(source, converters=csv_converters(mode=mode))
+            self.df = pd.read_csv(source, converters=csv_converters(mode=mode), dtype=csv_dtypes())
 
     #### GENERAL UTILITY FUNCTIONS ####
 
@@ -51,6 +51,12 @@ class Dataset:
     
     #### BASIC PROPERTIES ####
 
+    def domain_reals(self, value=True):
+        return self.apply('domain', lambda val: str(val) == 'Reals' if value else str(val) != 'Reals')
+
+    def range_reals(self, value=True):
+        return self.apply('range', lambda val: str(val) == 'Reals' if value else str(val) != 'Reals')
+
     def is_polynomial(self, value=True):
         return self.is_equal('polynomial', value)
     
@@ -62,6 +68,18 @@ class Dataset:
     
     def is_integral_elementary(self, value=True):
         return self.is_equal('integral_elementary', value)
+    
+    def is_increasing(self, value=True):
+        return self.is_equal('increasing', value)
+    
+    def is_decreasing(self, value=True):
+        return self.is_equal('decreasing', value)
+    
+    def is_convex(self, value=True):
+        return self.is_equal('convex', value)
+    
+    def is_concave(self, value=True):
+        return self.is_equal('concave', value)
     
     #### META PROPERTIES ####
 
@@ -107,6 +125,17 @@ class Dataset:
         
     def discontinuities_count(self, query, negate=False):
         return self.filter_numerical('discontinuities_count', query, negate=negate)
+        
+    def minima_count(self, query, global_only=False, negate=False):
+        field = ('global_' if global_only else '') + 'minima_count'
+        return self.filter_numerical(field, query, negate=negate)
+        
+    def maxima_count(self, query, global_only=False, negate=False):
+        field = ('global_' if global_only else '') + 'maxima_count'
+        return self.filter_numerical(field, query, negate=negate)
+        
+    def inflections_count(self, query, negate=False):
+        return self.filter_numerical('inflections_count', query, negate=negate)
     
     #### OTHER PROPERTIES ####
         

@@ -96,7 +96,6 @@ def discontinuities(f, x=Symbol('x', real=True)):
             dc_count += count
             dc_exact += values_exact
     except Exception:
-        print('discontinuities calculation failed for: ', f)
         dc = []
         dc_exact = None
         dc_count = None

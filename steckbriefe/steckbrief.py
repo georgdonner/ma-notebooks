@@ -164,6 +164,22 @@ class Steckbrief:
         return self.get_prop('global_maxima_count' if global_only else 'maxima_count')
     
     @property
+    def increasing(self):
+        return self.get_prop('increasing')
+    
+    @property
+    def decreasing(self):
+        return self.get_prop('decreasing')
+    
+    @property
+    def convex(self):
+        return self.get_prop('convex')
+    
+    @property
+    def concave(self):
+        return self.get_prop('concave')
+    
+    @property
     def integral(self):
         return self.get_prop('integral')
     
