@@ -52,10 +52,9 @@ if __name__ == "__main__":
     with ProcessPool() as pool:
         with open(args.input, 'r') as readfile:
             for index, line in enumerate(readfile):
-                if index < 100:
-                    line = re.sub('\s+', '', line)
-                    future = pool.schedule(get_steckbrief, (line, queue, args.serialize), timeout=args.timeout)
-                    future.add_done_callback(done)
+                line = re.sub('\s+', '', line)
+                future = pool.schedule(get_steckbrief, (line, queue, args.serialize), timeout=args.timeout)
+                future.add_done_callback(done)
         pool.close()
         pool.join()
         queue_process.kill()
