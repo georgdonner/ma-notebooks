@@ -8,7 +8,7 @@ parser.add_argument('-f', '--format', help='output file format', default='pickle
 parser.add_argument('-o', '--output', help='output file for steckbriefe', type=str)
 args = parser.parse_args()
 if not args.output:
-    args.output = re.sub(r'\w+$', args.format, args.input)
+    args.output = 'reduced_' + re.sub(r'\w+$', args.format, args.input)
 
 dtypes = csv_dtypes()
 csv_converters = {

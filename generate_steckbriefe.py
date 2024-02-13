@@ -5,7 +5,6 @@ from pebble import ProcessPool
 
 from steckbriefe.calc.steckbrief import calculate_steckbrief
 from steckbriefe.fields import all_fields
-from config import Config
 
 def get_steckbrief(fn_str, queue, serialize):
     steckbrief = calculate_steckbrief(fn_str, serialize=serialize)
@@ -51,7 +50,7 @@ if __name__ == "__main__":
 
     with ProcessPool() as pool:
         with open(args.input, 'r') as readfile:
-            for index, line in enumerate(readfile):
+            for line in readfile:
                 line = re.sub('\s+', '', line)
                 future = pool.schedule(get_steckbrief, (line, queue, args.serialize), timeout=args.timeout)
                 future.add_done_callback(done)
