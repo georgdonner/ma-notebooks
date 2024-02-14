@@ -1,5 +1,4 @@
-import argparse, re, time, sys
-from argparse import ArgumentParser
+import argparse, time
 from sympy import sympify, Symbol, Mul, Function
 from config import Config
 
@@ -13,7 +12,7 @@ def duplicate_constants(left, right):
     right_consts = right.atoms(Symbol) - set(config.variables)
     return left_consts & right_consts
 
-def generate_expressions(sub_expressions, reduce_functions=False):
+def generate_expressions(sub_expressions):
     for op in config.operations:
         if op.is_binary:
             iterator = op.combinatoric_iterator(sub_expressions)
@@ -21,12 +20,14 @@ def generate_expressions(sub_expressions, reduce_functions=False):
                 if config.unique_constants:
                     if len(duplicate_constants(left, right)):
                         continue
-                if reduce_functions and left.has(Function) and right.has(Function):
+                # drastically reduces amount of generated expressions, but also discards lots of unique ones
+                # this is recommended for a depth of 3
+                if config.reduce_functions and left.has(Function) and right.has(Function):
                     continue
                 yield op(left, right)
         else:
             for expr in sub_expressions:
-                if reduce_functions and expr.has(Function):
+                if config.reduce_functions and expr.has(Function):
                     continue
                 yield op(expr)
 
@@ -41,17 +42,13 @@ def has_prioritized_constants(expr):
 
 def save_expressions(sub_expressions=config.symbols, depth=0):
     uniques = set(config.symbols)
-    last_depth = depth == config.max_depth - 1
     if depth < config.max_depth:
-        # file = open(f'expressions_depth{depth}reduced4.csv', 'w')
-        for expr in generate_expressions(sub_expressions, reduce_functions=True):
+        for expr in generate_expressions(sub_expressions):
             if not config.allow_constant_expressions and not expr.has(*config.variables):
                 continue
             expr = sympify(expr, evaluate=config.evaluate_expressions)
             # Eliminate multiplications with symbols
             expr = expr.replace(match_num_mul, replace_num_mul)
-            if '1/' in str(expr):
-                continue
             uniques.add(expr)
         save_expressions(sub_expressions=uniques, depth=depth + 1)
     else:

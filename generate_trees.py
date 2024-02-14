@@ -30,6 +30,7 @@ def generate_trees(tree):
                 new_tree.create_node(str(node), parent=leaf, data=node)
                 yield from generate_trees(new_tree)
 
+# recursively converts a tree into an expression
 def evaluate(tree):
     node = tree[tree.root]
     if node.data in config.symbols:
@@ -46,6 +47,7 @@ with open('expression_trees.csv', 'w') as file:
         base_tree.create_node(str(op), data=op)
         for tree in generate_trees(base_tree):
             file.write(str(evaluate(tree)))
+            # options if the tree should not be converted to an expression:
             # file.write(tree.to_json(sort=False))
             # file.write(str(tree))
             file.write('\n')

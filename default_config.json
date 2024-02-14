@@ -15,5 +15,6 @@
   "evaluate_expressions": true,
   "allow_constant_expressions": false,
   "unique_constants": false,
-  "single_range_constants": false
+  "single_range_constants": false,
+  "reduce_functions": false
 }

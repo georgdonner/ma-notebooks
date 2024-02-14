@@ -1,5 +1,6 @@
 from sympy import oo, limit, Symbol
 
+# See https://encyclopediaofmath.org/index.php?title=Asymptote
 def asymptotes(f, x=Symbol('x', real=True)):
     asyms = set()
     if not f.is_polynomial(x):
@@ -10,7 +11,7 @@ def asymptotes(f, x=Symbol('x', real=True)):
                     n = limit(f-m*x, x, lim)
                     if n.is_real and n.is_number:
                         asyms.add(m*x+n)
-            except Exception as e:
+            except Exception:
                 pass
     return {
         'asymptotes': list(asyms),

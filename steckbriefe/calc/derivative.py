@@ -15,10 +15,13 @@ def derivative(f, x=Symbol('x', real=True)):
     }
 
 def process_set(_set):
+    # ConditionSet are the result of SymPy not being able to determine the results,
+    # but still describing them symbolically, which is not useful in this case
     if isinstance(_set, ConditionSet) or isinstance(_set, EmptySet):
         return None
     return _set
 
+# Sympy provides CRootOf expressions for polynomials of higher degree which can't be solved elementary
 def has_c_root(_set):
     return _set.is_FiniteSet and any([z.has(CRootOf) for z in _set])
 
@@ -43,6 +46,7 @@ def extrema(f, x=Symbol('x', real=True), domain=None, fd=None, fn_range=None):
         if not fd_zeros.is_empty:
             fdd = diff(fd, x)
             if period:
+                # periodic extrema require determining them for one period
                 fd_minima = solveset(fdd > 0, x, fd_zeros)
                 fd_maxima = solveset(fdd < 0, x, fd_zeros)
                 n = Symbol('n')

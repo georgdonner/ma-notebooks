@@ -13,11 +13,13 @@ op_map = {
     '%': operator.mod,
 }
 
+# subtraction and division don't exist in SymPy
 def Sub(a, b, **kwargs):
     return core.Add(a, -b, **kwargs)
 def Div(a, b, **kwargs):
     return core.Mul(a, 1/b, **kwargs)
 
+# Python operations can't be "unevaluated" so these have to be SymPy functions
 op_map_noeval = {
     '+': core.Add,
     '-': Sub,
@@ -92,6 +94,7 @@ class Config:
             self.single_range_constants = parsed_config.get('single_range_constants', False)
         else:
             self.single_range_constants = False
+        self.reduce_functions = parsed_config.get('reduce_functions', False)
 
         self.variables = symbols(' '.join(parsed_config.get('variables', ['x'])), real=True, seq=True)
         self.constants = symbols(' '.join(parsed_config.get('constants', ['k'])), real=True, seq=True)

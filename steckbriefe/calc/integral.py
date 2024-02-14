@@ -12,6 +12,7 @@ def get_rule(step):
     for attr in valid_attrs:
         if hasattr(step, attr):
             if attr == 'alternatives':
+                # always choose the first (main) alternative
                 yield from get_rule(step.alternatives[0])
             elif attr == 'substeps':
                 for substep in step.substeps:
@@ -35,6 +36,7 @@ def integral(f, x=Symbol('x', real=True)):
             integral_rules = get_rules(steps)
             if len(integral.atoms(Integral)) and not 'DontKnowRule' in integral_rules:
                 integral = integrate(f, x)
+        # integrals with "DontKnowRule" are not fully solved
         if 'DontKnowRule' in integral_rules:
             integral_rules = []
         if len(integral.atoms(Integral)):

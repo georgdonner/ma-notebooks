@@ -15,6 +15,7 @@ csv_converters = {
     'discontinuities': parse_discontinuity_json,
     'integral_rules': lambda x: handle_list(x, str),
 }
+# only check existence for SymPy fields
 check_exist = ['domain', 'range', 'periodicity', 'zeros_exact', 'derivative', 'integral', 'inverse']
 for field in check_exist:
     csv_converters[field] = lambda val: bool(val)

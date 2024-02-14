@@ -14,7 +14,7 @@ def limits(f, x=Symbol('x', real=True)):
         try:
             l = limit(f, x, p)
             limits[key] = float(l)
-        except (TypeError, ValueError, NotImplementedError):
+        except Exception:
             limits[key] = None
     return limits
 
