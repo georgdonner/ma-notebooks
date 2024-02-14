@@ -15,7 +15,7 @@ csv_converters = {
     'discontinuities': parse_discontinuity_json,
     'integral_rules': lambda x: handle_list(x, str),
 }
-check_exist = ['domain', 'range', 'periodicity', 'derivative', 'integral', 'inverse']
+check_exist = ['domain', 'range', 'periodicity', 'zeros_exact', 'derivative', 'integral', 'inverse']
 for field in check_exist:
     csv_converters[field] = lambda val: bool(val)
 
@@ -30,6 +30,7 @@ function_col = df['function_example']
 # Only include easily indexable values like numbers and booleans
 reduced = df.select_dtypes(exclude=['object'])
 reduced.insert(loc=0, column='function_example', value=function_col)
+reduced = reduced.rename(columns={'zeros_exact': 'zeros'})
 
 if args.format == 'csv':
     reduced.to_csv(args.output)

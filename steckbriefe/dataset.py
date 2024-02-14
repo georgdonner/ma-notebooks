@@ -13,12 +13,13 @@ def not_external(fn):
     return decorated
 
 class Dataset:
-    def __init__(self, dataframe=None, source='steckbriefe.csv', external_source=None, mode='default'):
+    def __init__(self, dataframe=None, source='steckbriefe_depth2.csv', external_source=None, mode='default'):
         if dataframe is not None:
             self.df = dataframe
         else:
             if source.endswith('csv'):
-                self.df = pd.read_csv(source, converters=csv_converters(mode=mode), dtype=csv_dtypes())
+                converters = None if external_source else csv_converters(mode=mode)
+                self.df = pd.read_csv(source, converters=converters, dtype=csv_dtypes())
             elif source.endswith('pickle'):
                 self.df = pd.read_pickle(source)
             else:

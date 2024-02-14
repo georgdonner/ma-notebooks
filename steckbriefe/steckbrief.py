@@ -1,4 +1,4 @@
-from sympy import Expr, Set, Symbol, sympify
+from sympy import Expr, Set, Symbol, sympify, EmptySet
 
 from steckbriefe.calc.steckbrief import randomize_function
 from steckbriefe.fields import all_fields_map
@@ -20,6 +20,8 @@ class Steckbrief:
 
     @staticmethod
     def parse_value(value, _type):
+        if value == None and _type == Set:
+            return EmptySet
         if value == None or isinstance(value, _type) or (_type == Set and isinstance(value, set)):
             return value
         if _type == Expr or _type == Set:
@@ -148,20 +150,44 @@ class Steckbrief:
         return self.get_prop('derivative')
     
     @property
-    def minima(self, global_only=False):
-        return self.get_prop('global_minima' if global_only else 'minima')
+    def minima(self):
+        return self.get_prop('minima')
     
     @property
-    def maxima(self, global_only=False):
-        return self.get_prop('global_maxima' if global_only else 'maxima')
+    def maxima(self):
+        return self.get_prop('maxima')
     
     @property
-    def minima_count(self, global_only=False):
-        return self.get_prop('global_minima_count' if global_only else 'minima_count')
+    def global_minima(self):
+        return self.get_prop('global_minima')
     
     @property
-    def maxima_count(self, global_only=False):
-        return self.get_prop('global_maxima_count' if global_only else 'maxima_count')
+    def global_maxima(self):
+        return self.get_prop('global_maxima')
+    
+    @property
+    def minima_count(self):
+        return self.get_prop('minima_count')
+    
+    @property
+    def maxima_count(self):
+        return self.get_prop('maxima_count')
+    
+    @property
+    def global_minima_count(self):
+        return self.get_prop('global_minima_count')
+    
+    @property
+    def global_maxima_count(self):
+        return self.get_prop('global_maxima_count')
+    
+    @property
+    def inflections(self):
+        return self.get_prop('inflections')
+    
+    @property
+    def inflections_count(self):
+        return self.get_prop('inflections_count')
     
     @property
     def increasing(self):

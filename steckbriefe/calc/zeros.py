@@ -1,4 +1,4 @@
-from sympy import S, solve, solveset, Symbol, ConditionSet, ImageSet, LambertW
+from sympy import S, solve, solveset, Symbol, ConditionSet, ImageSet, LambertW, CRootOf
 from math import inf
 
 def zero_count(zero_set):
@@ -21,6 +21,8 @@ def zeros(f, x=Symbol('x', real=True), domain=S.Reals, throw=False):
                 zeros_exact = None
                 raise NotImplementedError
             zeros = [z for z in solve(f, x) if z.is_real and not z.has(LambertW)]
+        elif any([z.has(CRootOf) for z in zeros_exact]):
+            zeros_exact = None
         else:
             zeros = list(zeros_exact)
     except Exception:

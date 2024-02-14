@@ -1,4 +1,4 @@
-from sympy import diff, Ne, Symbol, S, solveset, ConditionSet
+from sympy import diff, Ne, Symbol, S, solveset, ConditionSet, CRootOf
 from sympy.calculus.util import periodicity, function_range, continuous_domain
 from sympy.sets.sets import EmptySet, FiniteSet, imageset, Interval
 
@@ -18,6 +18,9 @@ def process_set(_set):
     if isinstance(_set, ConditionSet) or isinstance(_set, EmptySet):
         return None
     return _set
+
+def has_c_root(_set):
+    return _set.is_FiniteSet and any([z.has(CRootOf) for z in _set])
 
 def extrema(f, x=Symbol('x', real=True), domain=None, fd=None, fn_range=None):
     minima = EmptySet()
@@ -55,10 +58,15 @@ def extrema(f, x=Symbol('x', real=True), domain=None, fd=None, fn_range=None):
                         global_maxima += max_periodic
             else:
                 minima = solveset(fdd > 0, x, fd_zeros).simplify()
-                if fn_range and minima.is_FiniteSet:
+                if has_c_root(minima):
+                    minima = None
+                if fn_range and minima.is_FiniteSet and not has_c_root(minima):
                     global_minima += FiniteSet(*[m for m in minima if f.subs(x, m) == fn_range.inf])
+
                 maxima = solveset(fdd < 0, x, fd_zeros).simplify()
-                if fn_range and maxima.is_FiniteSet:
+                if has_c_root(maxima):
+                    maxima = None
+                if fn_range and maxima.is_FiniteSet and not has_c_root(maxima):
                     global_maxima += FiniteSet(*[m for m in maxima if f.subs(x, m) == fn_range.sup])
     except Exception:
         minima = None
@@ -81,6 +89,8 @@ def extrema(f, x=Symbol('x', real=True), domain=None, fd=None, fn_range=None):
                     inflections += imageset(n, n*period+i, S.Integers)
             else:
                 inflections = solveset(Ne(fddd, 0), x, fdd_zeros).simplify()
+                if has_c_root(inflections):
+                    inflections = None
     except Exception:
         inflections = None
 
